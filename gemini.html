@@ -10,6 +10,7 @@
             --secondary: #ff758c;
             --bg: #fffafa;
             --text-color: #5d5d5d;
+            --line-green: #06c755;
         }
         
         * {
@@ -82,7 +83,7 @@
 
         .plan-box {
             background: white;
-            padding: 20px;
+            padding: 25px;
             border-radius: 20px;
             border: 2px solid var(--primary);
             box-shadow: 0 10px 30px rgba(255, 126, 179, 0.2);
@@ -102,17 +103,34 @@
             line-height: 1.6; 
             color: var(--text-color); 
             font-size: 0.85rem;
+            margin-bottom: 20px;
         }
         
-        .btn-retry {
-            margin-top: 20px;
-            background: #f0f0f0;
+        .btn-action {
+            width: 100%;
             border: none;
-            padding: 10px 20px;
-            border-radius: 25px;
+            padding: 14px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s;
+            margin-bottom: 10px;
+        }
+
+        .btn-action:active { transform: scale(0.98); }
+
+        .btn-line {
+            background-color: var(--line-green);
+            color: white;
+            box-shadow: 0 4px 10px rgba(6, 199, 85, 0.3);
+        }
+
+        .btn-retry {
+            background-color: #f0f0f0;
             color: #888;
             font-size: 0.8rem;
-            cursor: pointer;
+            padding: 10px;
         }
 
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
@@ -134,7 +152,14 @@
             <div id="selected-icon" style="font-size: 2.5rem; margin-bottom: 10px;"></div>
             <div id="selected-title" class="plan-title"></div>
             <div id="selected-detail" class="plan-text"></div>
-            <button class="btn-retry" onclick="reset()">他のプランも見る？</button>
+            
+            <button id="line-button" class="btn-action btn-line">
+                このプランにする！(LINEで送る)
+            </button>
+            
+            <button class="btn-action btn-retry" onclick="reset()">
+                他のプランも見てみる？
+            </button>
         </div>
     </div>
 
@@ -173,10 +198,19 @@
         });
 
         setTimeout(() => {
-            document.getElementById('selected-icon').innerText = plans[index].icon;
-            document.getElementById('selected-title').innerText = plans[index].title;
-            document.getElementById('selected-detail').innerHTML = plans[index].detail;
+            const plan = plans[index];
+            document.getElementById('selected-icon').innerText = plan.icon;
+            document.getElementById('selected-title').innerText = plan.title;
+            document.getElementById('selected-detail').innerHTML = plan.detail;
             document.getElementById('result-overlay').style.display = 'flex';
+
+            // LINE送信ボタンの設定
+            const lineBtn = document.getElementById('line-button');
+            const message = `今年の誕生日はこれにしたいな✨\n\n【${plan.title}】\n${plan.icon} に決定！`;
+            lineBtn.onclick = () => {
+                window.location.href = `https://line.me/R/msg/text/?${encodeURIComponent(message)}`;
+            };
+
         }, 700);
     }
 
