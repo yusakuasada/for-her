@@ -14,7 +14,7 @@
         
         * {
             box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent; /* タップ時の青い枠を消す */
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
@@ -27,7 +27,7 @@
             min-height: 100vh;
             margin: 0;
             padding: 20px;
-            overflow: hidden; /* スクロールを禁止してアプリ感を出す */
+            overflow: hidden;
         }
 
         h1 { 
@@ -38,19 +38,17 @@
             line-height: 1.6;
         }
         
-        /* カードのコンテナ */
         .card-container {
             display: flex;
-            gap: 10px;
+            gap: 15px;
             perspective: 1000px;
             width: 100%;
             justify-content: center;
         }
 
-        /* カードのスタイル（スマホ向けに少しスリムに） */
         .card {
-            width: 28%;
-            max-width: 90px;
+            width: 30%;
+            max-width: 100px;
             aspect-ratio: 2 / 3;
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             border-radius: 12px;
@@ -58,18 +56,16 @@
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: 1.8rem;
+            font-size: 2rem;
             cursor: pointer;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
             transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s;
             transform-style: preserve-3d;
         }
 
-        /* めくられた時のアニメーション */
         .card.flipped { transform: rotateY(180deg) scale(1.1); z-index: 10; }
         .card.hidden { opacity: 0; transform: scale(0.8); pointer-events: none; }
 
-        /* 結果表示エリア */
         #result-overlay {
             display: none;
             position: fixed;
@@ -86,36 +82,36 @@
 
         .plan-box {
             background: white;
-            padding: 25px;
+            padding: 20px;
             border-radius: 20px;
             border: 2px solid var(--primary);
             box-shadow: 0 10px 30px rgba(255, 126, 179, 0.2);
             width: 100%;
-            max-width: 320px;
+            max-width: 350px;
         }
 
         .plan-title { 
-            font-size: 1.2rem; 
+            font-size: 1.1rem; 
             font-weight: bold; 
             color: #ff4d7d; 
-            margin-bottom: 15px; 
+            margin-bottom: 12px; 
         }
 
         .plan-text { 
             text-align: left; 
-            line-height: 1.7; 
+            line-height: 1.6; 
             color: var(--text-color); 
-            font-size: 0.95rem;
+            font-size: 0.85rem;
         }
         
         .btn-retry {
-            margin-top: 25px;
+            margin-top: 20px;
             background: #f0f0f0;
             border: none;
-            padding: 12px 24px;
+            padding: 10px 20px;
             border-radius: 25px;
             color: #888;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             cursor: pointer;
         }
 
@@ -125,36 +121,39 @@
 <body>
 
     <div id="main-view">
-        <h1>どれにする？<br>好きなカードをえらんでね ✨</h1>
+        <h1>誕生日、どう過ごしたい？<br>直感でカードをえらんでね ✨</h1>
         <div class="card-container">
-            <div class="card" onclick="openCard(0)">🎁</div>
-            <div class="card" onclick="openCard(1)">🎂</div>
-            <div class="card" onclick="openCard(2)">🥂</div>
+            <div class="card" onclick="openCard(0)">🚢</div>
+            <div class="card" onclick="openCard(1)">🚗</div>
+            <div class="card" onclick="openCard(2)">🧩</div>
         </div>
     </div>
 
     <div id="result-overlay">
         <div class="plan-box">
-            <div style="font-size: 2.5rem; margin-bottom: 10px;">✨</div>
+            <div id="selected-icon" style="font-size: 2.5rem; margin-bottom: 10px;"></div>
             <div id="selected-title" class="plan-title"></div>
             <div id="selected-detail" class="plan-text"></div>
-            <button class="btn-retry" onclick="reset()">選び直す？</button>
+            <button class="btn-retry" onclick="reset()">他のプランも見る？</button>
         </div>
     </div>
 
 <script>
     const plans = [
         {
-            title: "Plan A：王道お祝いコース",
-            detail: "・おしゃれなエリアでお買い物<br>・夜景の見える特等席でディナー<br>・デザートプレートでお祝い！"
+            icon: "🚢",
+            title: "海上の特等席：ディナークルーズ",
+            detail: "<b>【王道のロマンチック】</b><br>・午後：新宿で一緒に誕プレ選び<br>・夕方：日の出桟橋から乗船🚢<br>・夜：東京湾の夜景を眺めながら<br>　船上フレンチディナーでお祝い！"
         },
         {
-            title: "Plan B：まったり癒やしコース",
-            detail: "・個室スパやマッサージでリラックス<br>・落ち着いた隠れ家カフェ巡り<br>・お家やホテルで豪華テイクアウト"
+            icon: "🚗",
+            title: "大人の遠足：海辺ドライブデート",
+            detail: "<b>【非日常な景色を楽しむ】</b><br>・午前：不動前から葉山方面へドライブ<br>・昼：海辺の邸宅レストランでランチ🍴<br>・午後：新宿に戻ってプレゼント選び🛍️<br>・夜：都会の夜景を横目に帰宅"
         },
         {
-            title: "Plan C：思い出体験コース",
-            detail: "・二人でペアリングや陶芸作り<br>・記念撮影スポットをぶらり散策<br>・カジュアルでおいしいお店で乾杯！"
+            icon: "🧩",
+            title: "全力で遊ぶ！アクティブミステリー",
+            detail: "<b>【楽しさ重視・体験型】</b><br>・昼：新宿で本格脱出ゲームに挑戦！<br>・午後：熱が冷めないうちに誕プレ選び<br>・夜：不動前周辺の名店イタリアンで<br>　気取らず、でも最高においしい乾杯🍷"
         }
     ];
 
@@ -174,6 +173,7 @@
         });
 
         setTimeout(() => {
+            document.getElementById('selected-icon').innerText = plans[index].icon;
             document.getElementById('selected-title').innerText = plans[index].title;
             document.getElementById('selected-detail').innerHTML = plans[index].detail;
             document.getElementById('result-overlay').style.display = 'flex';
