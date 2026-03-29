@@ -2,16 +2,23 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Birthday Plan Selection</title>
     <style>
         :root {
             --primary: #ff7eb3;
             --secondary: #ff758c;
             --bg: #fffafa;
+            --text-color: #5d5d5d;
         }
+        
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent; /* タップ時の青い枠を消す */
+        }
+
         body {
-            font-family: 'Hiragino Sans', 'Meiryo', sans-serif;
+            font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', sans-serif;
             background: var(--bg);
             display: flex;
             flex-direction: column;
@@ -19,74 +26,96 @@
             justify-content: center;
             min-height: 100vh;
             margin: 0;
-            overflow-x: hidden;
+            padding: 20px;
+            overflow: hidden; /* スクロールを禁止してアプリ感を出す */
         }
-        h1 { color: #d63384; font-size: 1.4rem; margin-bottom: 30px; text-align: center; }
+
+        h1 { 
+            color: #d63384; 
+            font-size: 1.2rem; 
+            margin-bottom: 40px; 
+            text-align: center; 
+            line-height: 1.6;
+        }
         
         /* カードのコンテナ */
         .card-container {
             display: flex;
-            gap: 15px;
+            gap: 10px;
             perspective: 1000px;
+            width: 100%;
+            justify-content: center;
         }
 
-        /* カードのスタイル */
+        /* カードのスタイル（スマホ向けに少しスリムに） */
         .card {
-            width: 100px;
-            height: 150px;
+            width: 28%;
+            max-width: 90px;
+            aspect-ratio: 2 / 3;
             background: linear-gradient(135deg, var(--primary), var(--secondary));
-            border-radius: 15px;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: 2rem;
+            font-size: 1.8rem;
             cursor: pointer;
-            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
-            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s;
             transform-style: preserve-3d;
-            position: relative;
         }
 
-        .card:hover { transform: translateY(-10px); }
-
         /* めくられた時のアニメーション */
-        .card.flipped { transform: rotateY(180deg) scale(1.2); z-index: 10; }
-        .card.hidden { opacity: 0; transform: scale(0.5); pointer-events: none; }
+        .card.flipped { transform: rotateY(180deg) scale(1.1); z-index: 10; }
+        .card.hidden { opacity: 0; transform: scale(0.8); pointer-events: none; }
 
         /* 結果表示エリア */
         #result-overlay {
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(255, 250, 250, 0.98);
             flex-direction: column;
             align-items: center;
             justify-content: center;
             padding: 20px;
             text-align: center;
             z-index: 100;
-            animation: fadeIn 0.5s forwards;
+            animation: fadeIn 0.5s ease-out forwards;
         }
 
         .plan-box {
             background: white;
-            padding: 30px;
-            border-radius: 25px;
-            border: 3px solid var(--primary);
-            box-shadow: 0 15px 35px rgba(255, 126, 179, 0.3);
-            max-width: 400px;
+            padding: 25px;
+            border-radius: 20px;
+            border: 2px solid var(--primary);
+            box-shadow: 0 10px 30px rgba(255, 126, 179, 0.2);
+            width: 100%;
+            max-width: 320px;
         }
 
-        .plan-title { font-size: 1.5rem; font-weight: bold; color: #ff4d7d; margin-bottom: 15px; }
-        .plan-text { text-align: left; line-height: 1.8; color: #555; }
+        .plan-title { 
+            font-size: 1.2rem; 
+            font-weight: bold; 
+            color: #ff4d7d; 
+            margin-bottom: 15px; 
+        }
+
+        .plan-text { 
+            text-align: left; 
+            line-height: 1.7; 
+            color: var(--text-color); 
+            font-size: 0.95rem;
+        }
         
         .btn-retry {
             margin-top: 25px;
-            background: #eee;
+            background: #f0f0f0;
             border: none;
-            padding: 10px 20px;
-            border-radius: 20px;
+            padding: 12px 24px;
+            border-radius: 25px;
+            color: #888;
+            font-size: 0.85rem;
             cursor: pointer;
         }
 
@@ -96,7 +125,7 @@
 <body>
 
     <div id="main-view">
-        <h1>どれにする？<br>好きなカードをタップしてね ✨</h1>
+        <h1>どれにする？<br>好きなカードをえらんでね ✨</h1>
         <div class="card-container">
             <div class="card" onclick="openCard(0)">🎁</div>
             <div class="card" onclick="openCard(1)">🎂</div>
@@ -106,7 +135,7 @@
 
     <div id="result-overlay">
         <div class="plan-box">
-            <div style="font-size: 3rem; margin-bottom: 10px;">✨</div>
+            <div style="font-size: 2.5rem; margin-bottom: 10px;">✨</div>
             <div id="selected-title" class="plan-title"></div>
             <div id="selected-detail" class="plan-text"></div>
             <button class="btn-retry" onclick="reset()">選び直す？</button>
@@ -129,8 +158,12 @@
         }
     ];
 
+    let isProcessing = false;
+
     function openCard(index) {
-        // 全カードにエフェクトをかける
+        if (isProcessing) return;
+        isProcessing = true;
+
         const cards = document.querySelectorAll('.card');
         cards.forEach((card, i) => {
             if(i === index) {
@@ -140,12 +173,11 @@
             }
         });
 
-        // 少し遅れて結果を表示
         setTimeout(() => {
             document.getElementById('selected-title').innerText = plans[index].title;
             document.getElementById('selected-detail').innerHTML = plans[index].detail;
             document.getElementById('result-overlay').style.display = 'flex';
-        }, 800);
+        }, 700);
     }
 
     function reset() {
